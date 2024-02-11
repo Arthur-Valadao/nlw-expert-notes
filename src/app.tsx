@@ -2,6 +2,7 @@ import { ChangeEvent, useState } from 'react'
 import logo from './assets/logo-nlw-expert.svg'
 import { NewNoteCard } from './components/new-note-card'
 import { NoteCard } from './components/note-card'
+import { toast } from 'sonner'
 
 interface Note {
   id: string,
@@ -36,6 +37,16 @@ export function App() {
     localStorage.setItem('notes', JSON.stringify(notesArray))
   }
 
+  function onNoteDeleted(id: string) {
+    const newNotesArray = notes.filter(note => {
+      toast.success('Nota apagada com sucesso!')
+      return note.id !== id
+    })
+    setNotes(newNotesArray)
+    localStorage.setItem('notes', JSON.stringify(newNotesArray))
+
+  }
+
   function hangleSearch(event: ChangeEvent<HTMLInputElement>) {
     const query = event.target.value
 
@@ -64,7 +75,7 @@ export function App() {
         <NewNoteCard onNoteCreated={onNoteCreated} />
 
         {filteredNotes.map(note => {
-          return <NoteCard key={note.id} note={note} />
+          return <NoteCard key={note.id} note={note} onNoteDeleted={onNoteDeleted} />
         })}
 
       </div>
